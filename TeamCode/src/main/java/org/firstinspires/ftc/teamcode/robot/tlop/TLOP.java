@@ -8,14 +8,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 
 @TeleOp
-public class TLOPtest extends LinearOpMode {
+public class TLOP extends LinearOpMode {
     private DcMotor rightFront, leftFront, rightRear, leftRear;
     private DcMotor leftEncoder, rightEncoder, frontEncoder;
     private static BNO055IMU imu;
 
+    private DcMotor sliderFront;
+
     @Override
     public void runOpMode(){
         Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap);
+
+        sliderFront = hardwareMap.get(DcMotor.class, "sF");
 
         waitForStart();
 
@@ -32,6 +36,14 @@ public class TLOPtest extends LinearOpMode {
                 chassis.leftRun(gamepad1.left_stick_x);
             }
             chassis.stopChassis();
+
+            if(gamepad1.right_bumper){
+                sliderFront.setPower(1);
+            }else if(gamepad1.left_bumper){
+                sliderFront.setPower(-1);
+            }else{
+                sliderFront.setPower(0);
+            }
         }
     }
 }

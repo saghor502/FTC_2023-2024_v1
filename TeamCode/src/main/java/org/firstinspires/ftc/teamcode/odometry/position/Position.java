@@ -20,4 +20,8 @@ public class Position {
     public static int getOrientation(){
         return orientation;
     }
+
+    public static void setXPosition(double xposition){Position.xPosition = xposition;}
+    public static void setYPosition(double yposition){Position.yPosition = yposition;}
+    public static void setOrientation(int orientation){Position.orientation = orientation;}
 }
