@@ -15,7 +15,7 @@ public class TLOPtest extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap);
+        Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap, telemetry);
 
         waitForStart();
 

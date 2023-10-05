@@ -3,18 +3,18 @@
     <position id="1">
         <xPosition>0</xPosition>
         <yPosition>0</yPosition>
-        <orientation>90</orientation>
+        <orientation>180</orientation>
     </position>
 
     <position id="2">
         <xPosition>1</xPosition>
         <yPosition>0</yPosition>
-        <orientation>90</orientation>
+        <orientation>180</orientation>
     </position>
 
     <staff id="3">
         <xPosition>1</xPosition>
         <yPosition>1</yPosition>
-        <orientation>90</orientation>
+        <orientation>180</orientation>
     </staff>
 </database>

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.domparser.DomParser;
 import org.firstinspires.ftc.teamcode.odometry.position.Position;
 import org.firstinspires.ftc.teamcode.robot.autonomous.AUTOtest.database.PosTestDB;
@@ -20,7 +21,7 @@ public class AUTOtest extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap);
+        Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap, telemetry);
         DomParser DB = new DomParser("TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/autonomous/AUTOtest/database/AUTOtest.xml");
         PosTestDB DB2 = new PosTestDB();
 
@@ -29,12 +30,14 @@ public class AUTOtest extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()){
             try {
-                chassis.turnToDegree(DB.getPosition("1"));
-                chassis.goToPosition(DB.getPosition("2"));
-                chassis.goToPosition(DB.getPosition("3"));
+                chassis.turnToDegree(DB2.position1);
+
+
                 DB.setPosition("1", newPosition);
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
+                telemetry.addData("Found Error while reading data from DataBse", e);
+                telemetry.update();
             }
         }
     }
