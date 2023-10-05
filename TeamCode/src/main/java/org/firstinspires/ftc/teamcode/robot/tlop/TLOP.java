@@ -35,6 +35,38 @@ public class TLOP extends LinearOpMode {
             if((gamepad1.left_stick_x > 0.2)||(gamepad1.left_stick_x < -0.2)){
                 chassis.leftRun(gamepad1.left_stick_x);
             }
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.robot.init.Chassis;
+
+@TeleOp
+public class TLOP extends LinearOpMode {
+    private DcMotor rightFront, leftFront, rightRear, leftRear;
+    private DcMotor leftEncoder, rightEncoder, frontEncoder;
+    private static BNO055IMU imu;
+
+    private DcMotor sliderFront;
+
+    @Override
+    public void runOpMode(){
+        Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap);
+
+        sliderFront = hardwareMap.get(DcMotor.class, "sF");
+
+        waitForStart();
+
+        while (!isStopRequested()){
+            if((gamepad1.left_stick_y > 0.2)||(gamepad1.left_stick_y < -0.2)){
+                chassis.forward(gamepad1.left_stick_y);
+            }
+
+            if((gamepad1.right_stick_x > 0.2)||(gamepad1.right_stick_x < -0.2)){
+                chassis.turnRight(gamepad1.right_stick_x);
+            }
+
+            if((gamepad1.left_stick_x > 0.2)||(gamepad1.left_stick_x < -0.2)){
+                chassis.leftRun(gamepad1.left_stick_x);
+            }
             chassis.stopChassis();
 
             if(gamepad1.right_bumper){
