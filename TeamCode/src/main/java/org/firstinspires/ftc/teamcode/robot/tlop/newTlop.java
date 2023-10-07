@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.odometry.position.Encoder;
-import org.firstinspires.ftc.teamcode.odometry.position.Encoder;
-
 @TeleOp
 public class newTlop extends LinearOpMode {
     private DcMotor rightFront;
@@ -27,6 +25,33 @@ public class newTlop extends LinearOpMode {
             telemetry.addData("X", EncoderX);
             telemetry.addData("Y", EncoderY);
             telemetry.update();
+
+            if (gamepad1.right_stick_y < 0.1){
+                forward(gamepad1.right_stick_y);
+            } else if (gamepad1.right_stick_y < 0.1){
+                forward(-gamepad1.right_stick_y);
+            } else {
+                forward(0);
+            }
+            if (gamepad1.left_stick_x < 0.1){
+                turn(gamepad1.left_stick_x);
+            } else if (gamepad1.left_stick_x < 0.1){
+                turn(-gamepad1.left_stick_x);
+            } else {
+                turn(0);
+            }
         }
+    }
+    public void forward(double pow){
+        leftFront.setPower(pow);
+        rightFront.setPower(-pow);
+        rightBack.setPower(-pow);
+        leftBack.setPower(pow);
+    }
+    public void turn(double pow){
+        leftFront.setPower(-pow);
+        rightFront.setPower(-pow);
+        rightBack.setPower(-pow);
+        leftBack.setPower(-pow);
     }
 }
