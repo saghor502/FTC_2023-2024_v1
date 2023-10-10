@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 import javax.xml.parsers.ParserConfigurationException;
 
 //Hola
-
+// Adios
 @Autonomous
 public class AUTOtest extends LinearOpMode {
     private DcMotor rightFront, leftFront, rightRear, leftRear;
