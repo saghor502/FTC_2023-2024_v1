@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.robot.tlop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.Odo.Levitate;
 import org.firstinspires.ftc.teamcode.odometry.position.Encoder;
+import org.firstinspires.ftc.teamcode.Odo.Levitate.*;
 @TeleOp
 public class newTlop extends LinearOpMode {
     private DcMotor rightFront;
@@ -13,9 +16,10 @@ public class newTlop extends LinearOpMode {
     private double EncoderX;
     private double EncoderY;
 
+
     //--------Config
     public static double RWYCoordinate = 10;
-    public static double
+    //public static double
     //--------------
     @Override
     public void runOpMode(){
@@ -45,6 +49,7 @@ public class newTlop extends LinearOpMode {
             } else {
                 turn(0);
             }
+            Levitate.Volar(2); //   QUEEEEEEE, EL ROBOT VA A VOLAR 100% 
         }
     }
     public void forward(double pow){

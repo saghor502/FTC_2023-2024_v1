@@ -152,16 +152,16 @@ public class Chassis {
 
     /**POWER RUNNING**/
     public void forward(double power){
-        rightFront.setPower(-power);
-        rightRear.setPower(-power);
-        leftFront.setPower(power);
-        leftRear.setPower(power);
+        rightFront.setPower(power);
+        rightRear.setPower(power);
+        leftFront.setPower(-power);
+        leftRear.setPower(-power);
     }
     public void leftRun(double power){
         rightFront.setPower(-power);
         rightRear.setPower(power);
-        leftFront.setPower(-power);
-        leftRear.setPower(power);
+        leftFront.setPower(power);
+        leftRear.setPower(-power);
     }
     public void turnRight(double power){
         rightFront.setPower(-power);
