@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.domparser.DomParser;
 import org.firstinspires.ftc.teamcode.odometry.position.Position;
 import org.firstinspires.ftc.teamcode.robot.autonomous.AUTOtest.database.PosTestDB;
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
+import org.json.JSONException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -24,23 +25,18 @@ public class AUTOtest extends LinearOpMode {
     @Override
     public void runOpMode(){
         Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap, telemetry);
-        DomParser DB = new DomParser("TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/autonomous/AUTOtest/database/AUTOtest.xml");
+        DomParser DB = new DomParser("AUTOtest.json");
         PosTestDB DB2 = new PosTestDB();
-
-        Position newPosition = new Position(1,1,90);
 
         waitForStart();
         while (!isStopRequested()){
             try {
-                chassis.turnToDegree(DB2.position1);
-
-
-                DB.setPosition("1", newPosition);
-            } catch (ParserConfigurationException e) {
+                telemetry.addData("xPosition: ", DomParser.writeData());
+            } catch (JSONException e) {
                 e.printStackTrace();
-                telemetry.addData("Found Error while reading data from DataBse", e);
-                telemetry.update();
+                telemetry.addData("xPosition: ", e.toString());
             }
+            telemetry.update();
         }
     }
 }
