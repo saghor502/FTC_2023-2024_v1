@@ -25,17 +25,10 @@ public class AUTOtest extends LinearOpMode {
     @Override
     public void runOpMode(){
         Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, imu, hardwareMap, telemetry);
-        DomParser DB = new DomParser("AUTOtest.json");
-        PosTestDB DB2 = new PosTestDB();
 
         waitForStart();
         while (!isStopRequested()){
-            try {
-                telemetry.addData("xPosition: ", DomParser.writeData());
-            } catch (JSONException e) {
-                e.printStackTrace();
-                telemetry.addData("xPosition: ", e.toString());
-            }
+
             telemetry.update();
         }
     }

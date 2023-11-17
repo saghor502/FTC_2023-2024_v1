@@ -17,6 +17,8 @@ public class Chassis {
     private static BNO055IMU imu;
     private static Telemetry telemetry;
 
+    private double ticksPerInches = 5000;
+
     private double inchesError = 5;
     private double orientationError = 2;
 
@@ -102,7 +104,18 @@ public class Chassis {
 
     /**ENCODER/IMU RUNNING**/
     public void goToPosition(Position position) {
+        boolean hasThreeEncoders;
+        if(rightEncoder == null){
+            hasThreeEncoders = false;
+        }else{
+            hasThreeEncoders = true;
+        }
+
+        rightEncoder.getCurrentPosition();
+
     }
+
+
     public void turnToDegree(Position position) {
         double curdeg=Math.toDegrees(imu.getAngularOrientation().firstAngle)-orientationError;
         double pivot = (orientationError - curdeg);
