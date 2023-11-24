@@ -4,14 +4,16 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.odometry.Encoder;
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 
 @TeleOp
 public class TLOP extends LinearOpMode {
-    private DcMotor rightFront, leftFront, rightRear, leftRear;
-    private DcMotor leftEncoder, rightEncoder, frontEncoder;
+    private DcMotorEx rightFront, leftFront, rightRear, leftRear;
+    private Encoder leftEncoder, rightEncoder, frontEncoder;
     private Servo articulation1, articulation2, middleArt, claw;
     private Servo outake1, outake2;
     private DcMotor upr, upl;
@@ -116,14 +118,14 @@ public class TLOP extends LinearOpMode {
 //                articulation2.setPosition(0);
 //            }
 
-            /**OUTAKE**/
-//            if (gamepad2.right_stick_y > 0.2) {
-//                slidervert.setPower(gamepad2.right_stick_y);
-//            } else if (gamepad2.right_stick_y < -0.2) {
-//                slidervert.setPower(gamepad2.right_stick_y);
-//            } else {
-//                slidervert.setPower(0);
-//            }
+
+            if (gamepad2.right_stick_y > 0.2) {
+                slidervert.setPower(gamepad2.right_stick_y);
+            } else if (gamepad2.right_stick_y < -0.2) {
+                slidervert.setPower(gamepad2.right_stick_y);
+            } else {
+                slidervert.setPower(0);
+            }
 
             if(gamepad2.right_bumper){
                 positionO1 = true;
@@ -147,30 +149,30 @@ public class TLOP extends LinearOpMode {
 
             double mult1 = 0.5;
 
-            if (gamepad2.right_stick_y > 0.2) {
-                upr.setPower(gamepad2.right_stick_y * mult1);
-//                upl.setPower(gamepad2.left_stick_y * mult);
-            } else if (gamepad2.right_stick_y < -0.2) {
-                upr.setPower(gamepad2.right_stick_y * mult1);
-//                upl.setPower(gamepad2.left_stick_y * mult);
+            if (gamepad2.left_stick_y > 0.2) {
+                upr.setPower(gamepad2.left_stick_y * mult1);
+                upl.setPower(gamepad2.left_stick_y * mult1);
+            } else if (gamepad2.left_stick_y < -0.2) {
+                upr.setPower(gamepad2.left_stick_y * mult1);
+                upl.setPower(gamepad2.left_stick_y * mult1);
             } else {
                 upr.setPower(0);
-//                upl.setPower(0);
-            }
-
-
-            double mult2 = 0.5;
-
-            if (gamepad2.left_stick_y> 0.2) {
-//                upr.setPower(gamepad2.left_stick_y * mult);
-                upl.setPower(gamepad2.left_stick_y * mult2);
-            } else if (gamepad2.left_stick_y < -0.2) {
-//                upr.setPower(gamepad2.left_stick_y * mult);
-                upl.setPower(gamepad2.left_stick_y * mult2);
-            } else {
-//                upr.setPower(0);
                 upl.setPower(0);
             }
+
+
+//            double mult2 = 0.5;
+//
+//            if (gamepad2.left_stick_y> 0.2) {
+////                upr.setPower(gamepad2.left_stick_y * mult);
+//                upl.setPower(gamepad2.left_stick_y * mult2);
+//            } else if (gamepad2.left_stick_y < -0.2) {
+////                upr.setPower(gamepad2.left_stick_y * mult);
+//                upl.setPower(gamepad2.left_stick_y * mult2);
+//            } else {
+////                upr.setPower(0);
+//                upl.setPower(0);
+//            }
 
             telemetry.update();
         }
