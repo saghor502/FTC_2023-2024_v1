@@ -23,15 +23,15 @@ public class FieldCentric2TEST extends LinearOpMode {
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
 
@@ -39,13 +39,11 @@ public class FieldCentric2TEST extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        double totalX = 0;
-        double totalY = 0;
 
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x;
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
@@ -60,9 +58,6 @@ public class FieldCentric2TEST extends LinearOpMode {
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
             double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-            rotX = rotX * 1.1;  // Counteract imperfect strafing
-            totalX += rotX;
-            totalY += rotY;
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
@@ -79,9 +74,11 @@ public class FieldCentric2TEST extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             telemetry.addData("t1", Math.toDegrees(botHeading));
-            telemetry.addData("x", totalX);
-            telemetry.addData("y", totalY);
             telemetry.addData("rxHeading", rx);
+            telemetry.addData("JoystickX", x);
+            telemetry.addData("JoystickY", y);
+            telemetry.addData("rb", backLeftPower);
+            telemetry.addData("rf",frontRightPower);
             telemetry.update();
         }
     }

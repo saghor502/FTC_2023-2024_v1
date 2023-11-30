@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.robot.autonomous.AUTOtest;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.odometry.Encoder;
@@ -15,19 +17,20 @@ import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 public class AUTOtest extends LinearOpMode {
     private DcMotorEx rightFront, leftFront, rightRear, leftRear;
     private Encoder leftEncoder, rightEncoder, frontEncoder;
-    private Servo angel;
+    private Servo angel;h
 
     @Override
     public void runOpMode(){
-        BNO055IMU imu;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
-
+//        IMU imu = hardwareMap.get(IMU.class, "imu");
+//        // Adjust the orientation parameters to match your robot
+//        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+//                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+//                RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+//        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+//        imu.initialize(parameters);
         Chassis roberto = new Chassis(rightFront, rightRear, leftFront, leftRear,
                 leftEncoder, rightEncoder, frontEncoder,
-                imu, hardwareMap, telemetry);
+                hardwareMap, telemetry);
         angel =  hardwareMap.get(Servo.class, "claw");
 
         waitForStart();
@@ -46,9 +49,9 @@ public class AUTOtest extends LinearOpMode {
 //
 //            sleep(30000);
 
-            telemetry.addData("x", roberto.testerGetPosition().getXPosition());
-            telemetry.addData("y", roberto.testerGetPosition().getYPosition());
-            telemetry.addData("orientation", roberto.testerGetPosition().getOrientation());
+            telemetry.addData("x", roberto.updatePosition().getXPosition());
+            telemetry.addData("y", roberto.updatePosition().getYPosition());
+            telemetry.addData("orientation", roberto.updatePosition().getOrientation());
             telemetry.update();
         }
     }
