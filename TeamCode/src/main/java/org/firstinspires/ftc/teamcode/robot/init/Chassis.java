@@ -35,7 +35,8 @@ public class Chassis {
     int numberOfEncoders = 0;
 
     public Chassis(DcMotorEx rF, DcMotorEx rR, DcMotorEx lF, DcMotorEx lR,
-                   Encoder lE, Encoder rE, Encoder fE, HardwareMap hardwareMap, Telemetry telemetry) {
+                   Encoder lE, Encoder rE, Encoder fE,
+                   HardwareMap hardwareMap, Telemetry telemetry) {
         numberOfEncoders = 2;
         rightFront = rF;
         rightRear = rR;
@@ -118,7 +119,7 @@ public class Chassis {
     }
 
     public void initChassis(){
-        initialhead =  this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        initialhead =  Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
     }
 
     /**TESTER FUNCTIONS*/
@@ -129,7 +130,7 @@ public class Chassis {
     public Position updatePosition() {
         //save position and orientation
         currentPosition.setOrientation((int) Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - initialhead));
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double botHeading = ((int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = (leftEncoder.getCurrentPosition() / ticksPerInches) * Math.cos(-botHeading) - (frontEncoder.getCurrentPosition() / ticksPerInches) * Math.sin(-botHeading);

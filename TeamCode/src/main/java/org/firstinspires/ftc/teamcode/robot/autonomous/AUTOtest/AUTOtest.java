@@ -17,9 +17,9 @@ import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 public class AUTOtest extends LinearOpMode {
     private DcMotorEx rightFront, leftFront, rightRear, leftRear;
     private Encoder leftEncoder, rightEncoder, frontEncoder;
-    private Servo angel;h
+    private Servo angel;
 
-    @Override
+
     public void runOpMode(){
 //        IMU imu = hardwareMap.get(IMU.class, "imu");
 //        // Adjust the orientation parameters to match your robot

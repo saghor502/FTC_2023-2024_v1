@@ -19,6 +19,9 @@ public class FieldCentric2TEST extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("rf");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("rb");
 
+        DcMotor sliderHor = hardwareMap.dcMotor.get("s1");
+
+
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -43,7 +46,7 @@ public class FieldCentric2TEST extends LinearOpMode {
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x;
-            double rx = -gamepad1.right_stick_x;
+            double rx = gamepad1.right_stick_x;
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
@@ -68,10 +71,14 @@ public class FieldCentric2TEST extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
-            frontLeftMotor.setPower(frontLeftPower);
+            frontLeftMotor.setPower(backRightPower);
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            backRightMotor.setPower(frontLeftPower);
+
+            if (gamepad2.left_stick_y > 0.3){
+
+            }
 
             telemetry.addData("t1", Math.toDegrees(botHeading));
             telemetry.addData("rxHeading", rx);
