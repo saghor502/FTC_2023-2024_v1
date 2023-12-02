@@ -28,7 +28,7 @@ public class Chassis {
 
     private double ticksPerInches = 331.4583333;
 
-    private double distanceError = 5;
+    private double distanceError = 1;
     private double orientationError = 2;
     double initialhead = 0;
 
@@ -119,7 +119,7 @@ public class Chassis {
     }
 
     public void initChassis(){
-        initialhead =  Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        initialhead =  (int) Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
     }
 
     /**TESTER FUNCTIONS*/
@@ -127,10 +127,10 @@ public class Chassis {
         return currentPosition;
     }
 
-    public Position updatePosition() {
+    public void updatePosition() {
         //save position and orientation
         currentPosition.setOrientation((int) Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - initialhead));
-        double botHeading = ((int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        double botHeading = currentPosition.getOrientation();
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = (leftEncoder.getCurrentPosition() / ticksPerInches) * Math.cos(-botHeading) - (frontEncoder.getCurrentPosition() / ticksPerInches) * Math.sin(-botHeading);
@@ -138,33 +138,8 @@ public class Chassis {
 
         currentPosition.setXPosition(rotX);
         currentPosition.setYPosition(rotY);
-
-        return currentPosition;
     }
 
-    public Position newUpdateOnPos(double gamepadX, double gamepadY, double gamepadRX){
-        currentPosition.setOrientation((int) Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - initialhead));
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-        // Rotate the movement direction counter to the bot's rotation
-
-        gamepadY = -gamepadY;
-
-        double rotX = gamepadX * Math.cos(-botHeading) - gamepadY * Math.sin(-botHeading);
-        double rotY = gamepadX * Math.sin(-botHeading) + gamepadY * Math.cos(-botHeading);
-
-        double denominator = Math.max(Math.abs(rotX) + Math.abs(rotY) + Math.abs(gamepadRX), 1);
-
-        double lf = rotY + rotX + gamepadRX / denominator; //Le pones al motor el poder de este, ej. leftFack.setPower(lf);
-        double lb = rotY - rotX + gamepadRX / denominator;
-        double rf = rotY - rotX - gamepadRX / denominator;
-        double rb = rotY + rotX - gamepadRX / denominator;
-
-        currentPosition.setXPosition(rotX);
-        currentPosition.setYPosition(rotY);
-
-        return currentPosition;
-    }
 
     /**POSITION MOVEMENT**/
     /*asynchronous method*/
@@ -179,7 +154,7 @@ public class Chassis {
                 (Math.abs(distanceToY) <= Math.abs(position.getYPosition()) + distanceError) &&
                 clause){
             //save position and orientation
-            this.currentPosition.setOrientation(Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)));
+            this.currentPosition.setOrientation( (int) Math.toDegrees(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)));
             this.currentPosition.setXPosition(frontEncoder.getCurrentPosition() * (Math.sin(Math.toRadians(currentPosition.getOrientation()))));
             if(numberOfEncoders == 3){
                 this.currentPosition.setYPosition((leftEncoder.getCurrentPosition() / ticksPerInches) * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
@@ -211,38 +186,92 @@ public class Chassis {
     }
 
     /*synchronous method*/
-    public void goToPosition(Position position, double robotPower) {
-        double distanceToX = currentPosition.getXPosition() - position.getXPosition();
-        double distanceToY = currentPosition.getYPosition() - position.getYPosition();
+    public void goToPosition(Position position, double robotPower){
+        double currentX = currentPosition.getXPosition();
+        double currentY = currentPosition.getYPosition();
+        double currentTheta = currentPosition.getOrientation();
 
-        while((currentPosition.getOrientation() != position.getOrientation()) &&
-                (Math.abs(distanceToX) <= Math.abs(position.getXPosition()) + distanceError) &&
-                (Math.abs(distanceToY) <= Math.abs(position.getYPosition()) + distanceError)){
-            //save position and orientation
-            this.currentPosition.setOrientation(Math.toDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)));
-            this.currentPosition.setXPosition(frontEncoder.getCurrentPosition() * (Math.sin(Math.toRadians(currentPosition.getOrientation()))));
-            if(numberOfEncoders == 3){
-                this.currentPosition.setYPosition((leftEncoder.getCurrentPosition() / ticksPerInches) * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
-            }else if(numberOfEncoders == 2){
-                double encoderAverage =  (leftEncoder.getCurrentPosition() + rightEncoder.getCurrentPosition())/2;
-                this.currentPosition.setYPosition(encoderAverage * encoderAverage * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
+        double distanceSlowed = distanceError + 0.5;
+
+        double powerLY = 0.2, powerLX = 0.2, powerRX = 0.2;
+
+        while(((currentX < position.getXPosition() + distanceError) && (currentX > position.getXPosition() - distanceError))
+            || ((currentY < position.getYPosition() + distanceError) && (currentY > position.getYPosition() - distanceError))
+            || ((currentTheta < position.getOrientation() + orientationError) && (currentTheta > position.getOrientation() - orientationError))){
+            currentX = currentPosition.getXPosition();
+            currentY = currentPosition.getYPosition();
+            currentTheta = currentPosition.getOrientation();
+
+            double distanceToX = Math.abs(currentPosition.getXPosition()) - Math.abs(position.getXPosition());
+            double distanceToY = Math.abs(currentPosition.getYPosition()) - Math.abs(position.getYPosition());
+            double distanceToTheta = Math.abs(currentPosition.getOrientation()) - Math.abs(position.getOrientation());
+
+            if(distanceToX > distanceSlowed){
+                powerLY = robotPower;
+            }else if((distanceToX < distanceSlowed)&&(distanceToX > distanceError)){
+                powerLY = 0.2;
             }else{
-                break;
+                powerLY = 0;
             }
 
-            //set powers to all motors
-            double robotmovementycomponent = calculateX(this.currentPosition.getOrientation(), robotPower, position.getOrientation());
-            double robotmovementxcomponent = calculateY(this.currentPosition.getOrientation(), robotPower, position.getOrientation());
+            if(distanceToY > distanceSlowed){
+                powerLX = robotPower;
+            }else if((distanceToY < distanceSlowed)&&(distanceToY > distanceError)){
+                powerLX = 0.2;
+            }else{
+                powerLY = 0;
+            }
 
-            double pivotCorrection = position.getOrientation() - currentPosition.getOrientation();
-            double pivotspeed = .05 * robotPower;
+            if(distanceToTheta > distanceSlowed){
+                powerRX = robotPower;
+            }else if((distanceToY < distanceSlowed)&&(distanceToY > distanceError)){
+                powerRX = 0.2;
+            }else{
+                powerRX = 0;
+            }
 
-            this.leftFront.setPower(-(robotmovementycomponent - robotmovementxcomponent + (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-            this.rightFront.setPower((robotmovementycomponent + robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-            this.leftRear.setPower(-(robotmovementycomponent + robotmovementxcomponent + (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-            this.rightRear.setPower((robotmovementycomponent - robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
+            move(powerLY, powerLX, powerRX);
+
+            telemetry.addData("x", currentX);
+            telemetry.addData("y", currentY);
+            telemetry.addData("theta", currentTheta);
+            telemetry.update();
+
+            updatePosition();
         }
     }
+//    public void goToPosition(Position position, double robotPower) {
+//        double distanceToX = currentPosition.getXPosition() - position.getXPosition();
+//        double distanceToY = currentPosition.getYPosition() - position.getYPosition();
+//
+//        while((currentPosition.getOrientation() != position.getOrientation()) &&
+//                (Math.abs(distanceToX) <= Math.abs(position.getXPosition()) + distanceError) &&
+//                (Math.abs(distanceToY) <= Math.abs(position.getYPosition()) + distanceError)){
+//            //save position and orientation
+//            this.currentPosition.setOrientation(Math.toDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)));
+//            this.currentPosition.setXPosition(frontEncoder.getCurrentPosition() * (Math.sin(Math.toRadians(currentPosition.getOrientation()))));
+//            if(numberOfEncoders == 3){
+//                this.currentPosition.setYPosition((leftEncoder.getCurrentPosition() / ticksPerInches) * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
+//            }else if(numberOfEncoders == 2){
+//                double encoderAverage =  (leftEncoder.getCurrentPosition() + rightEncoder.getCurrentPosition())/2;
+//                this.currentPosition.setYPosition(encoderAverage * encoderAverage * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
+//            }else{
+//                break;
+//            }
+//
+//            //set powers to all motors
+//            double robotmovementycomponent = calculateX(this.currentPosition.getOrientation(), robotPower, position.getOrientation());
+//            double robotmovementxcomponent = calculateY(this.currentPosition.getOrientation(), robotPower, position.getOrientation());
+//
+//            double pivotCorrection = position.getOrientation() - currentPosition.getOrientation();
+//            double pivotspeed = .05 * robotPower;
+//
+//            this.leftFront.setPower(-(robotmovementycomponent - robotmovementxcomponent + (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
+//            this.rightFront.setPower((robotmovementycomponent + robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
+//            this.leftRear.setPower(-(robotmovementycomponent + robotmovementxcomponent + (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
+//            this.rightRear.setPower((robotmovementycomponent - robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
+//        }
+//    }
 
     /**IMU TURNS**/
     /*asynchronous method*/
@@ -314,6 +343,57 @@ public class Chassis {
     }
 
     /**POWER RUNNING**/
+    public void move(double ly, double lx, double rx){
+        //ly = forward, lx = leftRun, rx = turnRight
+        double leftY;
+        double leftX;
+        double rightX;
+
+        //MAKE THE VARIABLES ZERO IN CASE OF ERROR
+        if(ly < 0.2 && ly > -0.2){
+            leftY = 0;
+        }else{
+            leftY = ly;
+        }
+        if(lx < 0.2 && lx > -0.2){
+            leftX = 0;
+        }else{
+            leftX = lx;
+        }
+        if(rx < 0.2 && rx > -0.2){
+            rightX = 0;
+        }else{
+            rightX = rx;
+        }
+
+        if(leftX != 0 && leftY != 0 && rightX != 0){
+            rightFront.setPower((leftY - leftX - rightX)/3);
+            rightRear.setPower((leftY + leftX - rightX)/3);
+            leftFront.setPower((-leftY + leftX - rightX)/3);
+            leftRear.setPower((-leftY - leftX - rightX)/3);
+        }else if((leftX != 0  && leftY != 0 && rightX == 0)
+                || (leftX != 0  && leftY == 0 && rightX != 0)
+                || (leftX == 0  && leftY != 0 && rightX != 0)){
+            rightFront.setPower((leftY - leftX - rightX)/2);
+            rightRear.setPower((leftY + leftX - rightX)/2);
+            leftFront.setPower((-leftY + leftX - rightX)/2);
+            leftRear.setPower((-leftY - leftX - rightX)/2);
+        }else if((leftX != 0  && leftY == 0 && rightX == 0)
+                || (leftX == 0  && leftY != 0 && rightX == 0)
+                || (leftX == 0  && leftY == 0 && rightX != 0)){
+            rightFront.setPower(leftY - leftX - rightX);
+            rightRear.setPower(leftY + leftX - rightX);
+            leftFront.setPower(-leftY + leftX - rightX);
+            leftRear.setPower(-leftY - leftX - rightX);
+        }else{
+            rightFront.setPower(0);
+            rightRear.setPower(0);
+            leftFront.setPower(0);
+            leftRear.setPower(0);
+        }
+
+
+    }
     public void forward(double power){
         rightFront.setPower(power);
         rightRear.setPower(power);

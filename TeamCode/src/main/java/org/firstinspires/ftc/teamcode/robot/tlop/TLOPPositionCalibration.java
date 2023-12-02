@@ -21,27 +21,17 @@ public class TLOPPositionCalibration extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested()){
-
-            if((gamepad1.left_stick_y > 0.2) || (gamepad1.left_stick_y < -0.2) ||
-                    (gamepad1.right_stick_x > 0.2) || (gamepad1.right_stick_x < -0.2) ||
-                    (gamepad1.left_stick_x > 0.2) || (gamepad1.left_stick_x < -0.2)){
-
-                if ((gamepad1.left_stick_y > 0.2) || (gamepad1.left_stick_y < -0.2)) {
-                    chassis.forward(gamepad1.left_stick_y);
-                }
-                if ((gamepad1.right_stick_x > 0.2) || (gamepad1.right_stick_x < -0.2)) {
-                    chassis.turnRight(gamepad1.right_stick_x);
-                }
-                if ((gamepad1.left_stick_x > 0.2) || (gamepad1.left_stick_x < -0.2)) {
-                    chassis.leftRun(gamepad1.left_stick_x);
-                }
+            if(gamepad1.right_trigger > 0.2){
+                chassis.move(gamepad1.left_stick_y * 0.5, gamepad1.left_stick_x * 0.5, gamepad1.right_stick_x * 0.5);
             }else{
-                chassis.stopChassis();
+                chassis.move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             }
 
-            double x = Math.round(chassis.updatePosition().getXPosition());
-            double y = Math.round(chassis.updatePosition().getYPosition());
-            int theta = (int) chassis.updatePosition().getOrientation();
+            chassis.updatePosition();
+
+            double x = Math.round(chassis.getPosition().getXPosition());
+            double y = Math.round(chassis.getPosition().getYPosition());
+            int theta = chassis.getPosition().getOrientation();
 
             telemetry.addData("x", x);
             telemetry.addData("y", y);

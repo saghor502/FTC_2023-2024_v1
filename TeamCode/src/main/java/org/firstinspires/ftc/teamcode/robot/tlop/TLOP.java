@@ -28,6 +28,7 @@ public class TLOP extends LinearOpMode {
     @Override
     public void runOpMode(){
         Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, hardwareMap, telemetry);
+        chassis.initChassis();
 
         sliderFront = hardwareMap.get(DcMotor.class, "sF");
         slidervert = hardwareMap.get(DcMotor.class, "sV");
@@ -44,43 +45,26 @@ public class TLOP extends LinearOpMode {
         upr =  hardwareMap.get(DcMotor.class, "ur");
         upl =  hardwareMap.get(DcMotor.class, "ul");
 
-
-
         waitForStart();
 
         while (!isStopRequested()) {
 
             /**CHASSIS**/
-            if((gamepad1.left_stick_y > 0.2) || (gamepad1.left_stick_y < -0.2) ||
-                    (gamepad1.right_stick_x > 0.2) || (gamepad1.right_stick_x < -0.2) ||
-                    (gamepad1.left_stick_x > 0.2) || (gamepad1.left_stick_x < -0.2)){
-
-                if ((gamepad1.left_stick_y > 0.2) || (gamepad1.left_stick_y < -0.2)) {
-                    chassis.forward(gamepad1.left_stick_y);
-                }
-                if ((gamepad1.right_stick_x > 0.2) || (gamepad1.right_stick_x < -0.2)) {
-                    chassis.turnRight(gamepad1.right_stick_x);
-                }
-                if ((gamepad1.left_stick_x > 0.2) || (gamepad1.left_stick_x < -0.2)) {
-                    chassis.leftRun(gamepad1.left_stick_x);
-                }
-            }else{
-                chassis.stopChassis();
-            }
+            chassis.move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             /**INTAKE**/
             if (gamepad1.right_bumper) {
-                sliderFront.setPower(1);
+                    sliderFront.setPower(-0.7);
             } else if (gamepad1.left_bumper) {
-                sliderFront.setPower(-1);
+                    sliderFront.setPower(0.7);
             } else {
                 sliderFront.setPower(0);
             }
 
             if(gamepad1.left_trigger > 0.2){
-                claw.setPosition(0);
-            }else if(gamepad1.right_trigger > 0.2){
                 claw.setPosition(1);
+            }else if(gamepad1.right_trigger > 0.2){
+                claw.setPosition(0);
             }
 
             if(gamepad1.dpad_up){
@@ -90,9 +74,9 @@ public class TLOP extends LinearOpMode {
             }
 
             if(positionMA){
-                middleArt.setPosition(0.95);
+                middleArt.setPosition(0.83);
             }else{
-                middleArt.setPosition(0.8);
+                middleArt.setPosition(0.7);
             }
 
             if(gamepad1.y){
@@ -102,8 +86,8 @@ public class TLOP extends LinearOpMode {
             }
 
             if(positionArt){
-                articulation1.setPosition(0.4);
-                articulation2.setPosition(0.4);
+                articulation1.setPosition(0.35);
+                articulation2.setPosition(0.35);
             }else{
                 articulation1.setPosition(0.775);
                 articulation2.setPosition(0.775);
@@ -111,9 +95,9 @@ public class TLOP extends LinearOpMode {
 
             /**OUTAKE*/
             if(gamepad2.dpad_up){
-                cat.setPower(0.5);
+                cat.setPower(1);
             }else if(gamepad2.dpad_down){
-                cat.setPower(-0.5);
+                cat.setPower(-1);
             }else{
                 cat.setPower(0);
             }
@@ -129,7 +113,7 @@ public class TLOP extends LinearOpMode {
             if(gamepad2.right_bumper){
                 outake1.setPosition(0.5);
             }else if(gamepad2.left_bumper){
-                outake1.setPosition(0.15);
+                outake1.setPosition(0.2);
             }
 
             if(gamepad2.right_trigger > 0.2){
@@ -144,10 +128,10 @@ public class TLOP extends LinearOpMode {
 
             if (gamepad2.left_stick_y > 0.2) {
                 upr.setPower(gamepad2.left_stick_y * mult1);
-                upl.setPower(-gamepad2.left_stick_y * mult1);
+                upl.setPower(gamepad2.left_stick_y * mult1);
             } else if (gamepad2.left_stick_y < -0.2) {
                 upr.setPower(gamepad2.left_stick_y * mult1);
-                upl.setPower(-gamepad2.left_stick_y * mult1);
+                upl.setPower(gamepad2.left_stick_y * mult1);
             } else {
                 upr.setPower(0);
                 upl.setPower(0);

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot.autonomous.AUTOtest;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.odometry.Encoder;
 import org.firstinspires.ftc.teamcode.odometry.position.Position;
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 
+@Disabled
 @Autonomous
 public class AUTOtest extends LinearOpMode {
     private DcMotorEx rightFront, leftFront, rightRear, leftRear;
@@ -31,6 +33,7 @@ public class AUTOtest extends LinearOpMode {
         Chassis roberto = new Chassis(rightFront, rightRear, leftFront, leftRear,
                 leftEncoder, rightEncoder, frontEncoder,
                 hardwareMap, telemetry);
+        roberto.initChassis();
         angel =  hardwareMap.get(Servo.class, "claw");
 
         waitForStart();
@@ -49,9 +52,10 @@ public class AUTOtest extends LinearOpMode {
 //
 //            sleep(30000);
 
-            telemetry.addData("x", roberto.updatePosition().getXPosition());
-            telemetry.addData("y", roberto.updatePosition().getYPosition());
-            telemetry.addData("orientation", roberto.updatePosition().getOrientation());
+            roberto.updatePosition();
+            telemetry.addData("x", roberto.getPosition().getXPosition());
+            telemetry.addData("y", roberto.getPosition().getYPosition());
+            telemetry.addData("orientation", roberto.getPosition().getOrientation());
             telemetry.update();
         }
     }
