@@ -45,6 +45,12 @@ public class TLOP extends LinearOpMode {
         upr =  hardwareMap.get(DcMotor.class, "ur");
         upl =  hardwareMap.get(DcMotor.class, "ul");
 
+
+        articulation1.setPosition(0.775);
+        articulation2.setPosition(0.775);
+        middleArt.setPosition(0.7);
+        outake2.setPosition(0.75);
+
         waitForStart();
 
         while (!isStopRequested()) {
@@ -54,9 +60,9 @@ public class TLOP extends LinearOpMode {
 
             /**INTAKE**/
             if (gamepad1.right_bumper) {
-                    sliderFront.setPower(-0.7);
+                    sliderFront.setPower(-1);
             } else if (gamepad1.left_bumper) {
-                    sliderFront.setPower(0.7);
+                    sliderFront.setPower(1);
             } else {
                 sliderFront.setPower(0);
             }
@@ -123,15 +129,12 @@ public class TLOP extends LinearOpMode {
             }
 
             /**WEIRD MECHANISMS XD**/
-
-            double mult1 = 0.5;
-
             if (gamepad2.left_stick_y > 0.2) {
-                upr.setPower(gamepad2.left_stick_y * mult1);
-                upl.setPower(gamepad2.left_stick_y * mult1);
+                upr.setPower(gamepad2.left_stick_y);
+                upl.setPower(gamepad2.left_stick_y);
             } else if (gamepad2.left_stick_y < -0.2) {
-                upr.setPower(gamepad2.left_stick_y * mult1);
-                upl.setPower(gamepad2.left_stick_y * mult1);
+                upr.setPower(gamepad2.left_stick_y);
+                upl.setPower(gamepad2.left_stick_y);
             } else {
                 upr.setPower(0);
                 upl.setPower(0);

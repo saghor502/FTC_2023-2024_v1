@@ -133,7 +133,9 @@ public class Chassis {
         double botHeading = currentPosition.getOrientation();
 
         // Rotate the movement direction counter to the bot's rotation
-        double rotX = (leftEncoder.getCurrentPosition() / ticksPerInches) * Math.cos(-botHeading) - (frontEncoder.getCurrentPosition() / ticksPerInches) * Math.sin(-botHeading);
+        //este no esta chido
+        double rotX = (frontEncoder.getCurrentPosition() / ticksPerInches) * Math.cos(-botHeading) - (leftEncoder.getCurrentPosition() / ticksPerInches) * Math.sin(-botHeading);
+        //este esta chido
         double rotY = (frontEncoder.getCurrentPosition() / ticksPerInches) * Math.sin(-botHeading) + (leftEncoder.getCurrentPosition() / ticksPerInches) * Math.cos(-botHeading);
 
         currentPosition.setXPosition(rotX);
@@ -184,6 +186,90 @@ public class Chassis {
             this.rightRear.setPower((robotmovementycomponent - robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
         }
     }
+    public void goToYDistance(double Y, double power){
+        double currentY = currentPosition.getYPosition();
+        double distanceSlow = distanceError + 0.5;
+        double desiredY = currentY + Y;
+        double direction = Y/Math.abs(Y);
+
+        forward(0.5);
+
+        while ((Math.abs(currentY) > Math.abs(desiredY + distanceError)) || (Math.abs(currentY) < Math.abs(desiredY - distanceError))){
+            currentY = currentPosition.getYPosition();
+
+            move(0, power * direction, 0);
+
+            updatePosition();
+
+            telemetry.addData("current y", currentY);
+            telemetry.addData("Position to go", desiredY);
+            telemetry.update();
+        }
+
+        stopChassis();
+    }
+
+    public void goToXDistance(double X, double power){
+        double currentY = currentPosition.getYPosition();
+        double distanceSlow = distanceError + 0.5;
+        double desiredY = currentY + X;
+        double direction = X/Math.abs(X);
+
+        forward(0.5);
+
+        while ((Math.abs(currentY) > Math.abs(desiredY + distanceError)) || (Math.abs(currentY) < Math.abs(desiredY - distanceError))){
+            currentY = currentPosition.getYPosition();
+
+            forward(power * direction);
+
+            updatePosition();
+
+            telemetry.addData("current y", currentY);
+            telemetry.addData("Position to go", desiredY);
+            telemetry.update();
+        }
+
+        stopChassis();
+    }
+
+    public void rotate(double Degree, double power){
+        double currentTheta = currentPosition.getOrientation();
+        double desiredOrientation = currentTheta + Degree;
+        double direction = (Degree - currentTheta)/Math.abs(Degree - currentTheta);
+
+        turnRight(0.5);
+
+        while ((Math.abs(currentTheta) < Math.abs(desiredOrientation + orientationError)) && (Math.abs(currentTheta) > Math.abs(desiredOrientation - orientationError))){
+            currentTheta = currentPosition.getOrientation();
+
+            turnRight(power * direction);
+
+            updatePosition();
+
+            telemetry.addData("current Theta", currentTheta);
+            telemetry.addData("Orientation to go", desiredOrientation);
+            telemetry.update();
+        }
+
+        stopChassis();
+    }
+
+    public void rotateDirection(double angle, double power) {
+        double leftEncoderDistance = leftEncoder.getCurrentPosition() / ticksPerInches;
+        double rightEncoderDistance = rightEncoder.getCurrentPosition() / ticksPerInches;
+        double currentOrientation = ((leftEncoderDistance - rightEncoderDistance) / (2 * 7.58));
+        double radianAngle = Math.toRadians(angle);
+        double powerQuirality = (radianAngle / Math.abs(radianAngle));
+        double Cpower = (powerQuirality * Math.abs(power));
+        while (Math.abs(radianAngle) > Math.abs(currentOrientation)){
+            turnRight(Cpower);
+            telemetry.addData("power xd", Cpower);
+            telemetry.addData("orientation", currentOrientation);
+            telemetry.addData("radian", radianAngle);
+            telemetry.update();
+        }
+        stopChassis();
+    }
 
     /*synchronous method*/
     public void goToPosition(Position position, double robotPower){
@@ -193,11 +279,11 @@ public class Chassis {
 
         double distanceSlowed = distanceError + 0.5;
 
-        double powerLY = 0.2, powerLX = 0.2, powerRX = 0.2;
+        double powerLY = 0.3, powerLX = 0.3, powerRX = 0.3;
 
-        while(((currentX < position.getXPosition() + distanceError) && (currentX > position.getXPosition() - distanceError))
-            || ((currentY < position.getYPosition() + distanceError) && (currentY > position.getYPosition() - distanceError))
-            || ((currentTheta < position.getOrientation() + orientationError) && (currentTheta > position.getOrientation() - orientationError))){
+        while(((currentX > position.getXPosition() + distanceError) || (currentX < position.getXPosition() - distanceError))
+            || ((currentY > position.getYPosition() + distanceError) || (currentY < position.getYPosition() - distanceError))
+            || ((currentTheta > position.getOrientation() + orientationError) || (currentTheta < position.getOrientation() - orientationError))){
             currentX = currentPosition.getXPosition();
             currentY = currentPosition.getYPosition();
             currentTheta = currentPosition.getOrientation();
@@ -343,27 +429,27 @@ public class Chassis {
     }
 
     /**POWER RUNNING**/
-    public void move(double ly, double lx, double rx){
+    public void move(double forwardPower, double leftPower, double turnPower){
         //ly = forward, lx = leftRun, rx = turnRight
         double leftY;
         double leftX;
         double rightX;
 
         //MAKE THE VARIABLES ZERO IN CASE OF ERROR
-        if(ly < 0.2 && ly > -0.2){
+        if(forwardPower < 0.1 && forwardPower > -0.1){
             leftY = 0;
         }else{
-            leftY = ly;
+            leftY = forwardPower;
         }
-        if(lx < 0.2 && lx > -0.2){
+        if(leftPower < 0.1 && leftPower > -0.1){
             leftX = 0;
         }else{
-            leftX = lx;
+            leftX = leftPower;
         }
-        if(rx < 0.2 && rx > -0.2){
+        if(turnPower < 0.1 && turnPower > -0.1){
             rightX = 0;
         }else{
-            rightX = rx;
+            rightX = turnPower;
         }
 
         if(leftX != 0 && leftY != 0 && rightX != 0){
@@ -391,8 +477,6 @@ public class Chassis {
             leftFront.setPower(0);
             leftRear.setPower(0);
         }
-
-
     }
     public void forward(double power){
         rightFront.setPower(power);
