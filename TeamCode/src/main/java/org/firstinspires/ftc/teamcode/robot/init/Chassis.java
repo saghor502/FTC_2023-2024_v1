@@ -293,6 +293,7 @@ public class Chassis {
             double distanceToTheta = Math.abs(currentPosition.getOrientation()) - Math.abs(position.getOrientation());
 
             if(distanceToX > distanceSlowed){
+
                 powerLY = robotPower;
             }else if((distanceToX < distanceSlowed)&&(distanceToX > distanceError)){
                 powerLY = 0.2;
