@@ -327,38 +327,6 @@ public class Chassis {
             updatePosition();
         }
     }
-//    public void goToPosition(Position position, double robotPower) {
-//        double distanceToX = currentPosition.getXPosition() - position.getXPosition();
-//        double distanceToY = currentPosition.getYPosition() - position.getYPosition();
-//
-//        while((currentPosition.getOrientation() != position.getOrientation()) &&
-//                (Math.abs(distanceToX) <= Math.abs(position.getXPosition()) + distanceError) &&
-//                (Math.abs(distanceToY) <= Math.abs(position.getYPosition()) + distanceError)){
-//            //save position and orientation
-//            this.currentPosition.setOrientation(Math.toDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)));
-//            this.currentPosition.setXPosition(frontEncoder.getCurrentPosition() * (Math.sin(Math.toRadians(currentPosition.getOrientation()))));
-//            if(numberOfEncoders == 3){
-//                this.currentPosition.setYPosition((leftEncoder.getCurrentPosition() / ticksPerInches) * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
-//            }else if(numberOfEncoders == 2){
-//                double encoderAverage =  (leftEncoder.getCurrentPosition() + rightEncoder.getCurrentPosition())/2;
-//                this.currentPosition.setYPosition(encoderAverage * encoderAverage * (Math.cos(Math.toRadians(currentPosition.getOrientation()))));
-//            }else{
-//                break;
-//            }
-//
-//            //set powers to all motors
-//            double robotmovementycomponent = calculateX(this.currentPosition.getOrientation(), robotPower, position.getOrientation());
-//            double robotmovementxcomponent = calculateY(this.currentPosition.getOrientation(), robotPower, position.getOrientation());
-//
-//            double pivotCorrection = position.getOrientation() - currentPosition.getOrientation();
-//            double pivotspeed = .05 * robotPower;
-//
-//            this.leftFront.setPower(-(robotmovementycomponent - robotmovementxcomponent + (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-//            this.rightFront.setPower((robotmovementycomponent + robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-//            this.leftRear.setPower(-(robotmovementycomponent + robotmovementxcomponent + (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-//            this.rightRear.setPower((robotmovementycomponent - robotmovementxcomponent - (Math.sin(Math.toRadians(pivotCorrection)) * pivotspeed)));
-//        }
-//    }
 
     /**IMU TURNS**/
     /*asynchronous method*/

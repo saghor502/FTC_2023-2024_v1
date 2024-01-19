@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.tlop;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.odometry.Encoder;
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 
 @TeleOp
+@Disabled
 public class TLOP extends LinearOpMode {
     private DcMotorEx rightFront, leftFront, rightRear, leftRear;
     private Servo articulation1, articulation2, middleArt, claw;

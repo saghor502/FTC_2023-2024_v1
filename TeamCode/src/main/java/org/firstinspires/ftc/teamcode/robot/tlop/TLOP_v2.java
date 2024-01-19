@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -12,19 +13,33 @@ import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 @TeleOp
 public class TLOP_v2 extends LinearOpMode {
     private DcMotorEx rightFront, leftFront, rightRear, leftRear;
-    private Servo brazo1, brazo2;
-    private CRServo cat;
-    private static BNO055IMU imu;
+
+    private DcMotor sliderOutLeft, sliderOutRight;
+    private DcMotor sliderHangLeft, sliderHangRight;
+    private Servo outakeLeft, outakeRight;
+    private CRServo jackLeft, jackRight;
 
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
         Chassis chassis = new Chassis(rightFront, rightRear, leftFront, leftRear, hardwareMap, telemetry);
         chassis.initChassis();
 
-        cat =  hardwareMap.get(CRServo.class, "cat");
-        brazo1 =  hardwareMap.get(Servo.class, "brazo1");
-        brazo2 =  hardwareMap.get(Servo.class, "brazo2");
+        sliderOutLeft = hardwareMap.get(DcMotor.class, "sol");
+        sliderOutRight = hardwareMap.get(DcMotor.class, "sor");
+
+        sliderHangLeft = hardwareMap.get(DcMotor.class, "shl");
+        sliderHangRight = hardwareMap.get(DcMotor.class, "shr");
+
+        outakeLeft = hardwareMap.get(Servo.class, "outl");
+        outakeRight = hardwareMap.get(Servo.class, "outr");
+
+        jackLeft = hardwareMap.get(CRServo.class, "jackl");
+        jackRight = hardwareMap.get(CRServo.class, "jackr");
+
+        //Initial setup
+        outakeLeft.setPosition(0.3);
+        outakeRight.setPosition(0.8);
 
         waitForStart();
 
@@ -34,21 +49,47 @@ public class TLOP_v2 extends LinearOpMode {
             chassis.move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             /**INTAKE**/
-            if(gamepad1.right_bumper){
-                brazo1.setPosition(1);
-                brazo2.setPosition(0);
-            }else if(gamepad1.left_bumper){
-                brazo1.setPosition(0);
-                brazo2.setPosition(1);
+            if(gamepad1.left_trigger > 1){
+                sliderOutLeft.setPower(0.5);
+                sliderOutRight.setPower(0.5);
+            }else if(gamepad1.right_trigger > 1){
+                sliderOutLeft.setPower(-0.5);
+                sliderOutRight.setPower(-0.5);
+            }else{
+                sliderOutLeft.setPower(0);
+                sliderOutRight.setPower(0);
             }
 
-            /**OUTAKE*/
-            if(gamepad2.dpad_up){
-                cat.setPower(1);
-            }else if(gamepad2.dpad_down){
-                cat.setPower(-1);
+            /**OUTAKE**/
+            if(gamepad2.right_trigger > 1){
+                outakeLeft.setPosition(0.8);
+                outakeRight.setPosition(0.3);
             }else{
-                cat.setPower(0);
+                outakeLeft.setPosition(0.3);
+                outakeRight.setPosition(0.8);
+            }
+            if(gamepad2.dpad_up){
+                jackLeft.setPower(1);
+                jackRight.setPower(1);
+            }else if(gamepad2.dpad_down){
+                jackLeft.setPower(-1);
+                jackRight.setPower(-1);
+            }else{
+                jackLeft.setPower(0);
+                jackRight.setPower(0);
+            }
+
+
+            /**MISC**/
+            if(gamepad2.right_stick_y > 1){
+                sliderHangLeft.setPower(1);
+                sliderHangRight.setPower(1);
+            }else if(gamepad2.right_stick_y < -1){
+                sliderHangLeft.setPower(-1);
+                sliderHangRight.setPower(-1);
+            }else{
+                sliderHangLeft.setPower(0);
+                sliderHangRight.setPower(0);
             }
 
             telemetry.update();
