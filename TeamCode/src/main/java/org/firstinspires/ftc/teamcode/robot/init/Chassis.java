@@ -405,17 +405,17 @@ public class Chassis {
         double rightX;
 
         //MAKE THE VARIABLES ZERO IN CASE OF ERROR
-        if(forwardPower < 0.1 && forwardPower > -0.1){
+        if(forwardPower < 0.2 && forwardPower > -0.2){
             leftY = 0;
         }else{
             leftY = forwardPower;
         }
-        if(leftPower < 0.1 && leftPower > -0.1){
+        if(leftPower < 0.2 && leftPower > -0.2){
             leftX = 0;
         }else{
             leftX = leftPower;
         }
-        if(turnPower < 0.1 && turnPower > -0.1){
+        if(turnPower < 0.2 && turnPower > -0.2){
             rightX = 0;
         }else{
             rightX = turnPower;

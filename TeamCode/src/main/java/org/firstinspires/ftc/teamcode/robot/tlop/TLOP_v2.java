@@ -49,18 +49,21 @@ public class TLOP_v2 extends LinearOpMode {
             chassis.move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             /**INTAKE**/
-            if(gamepad1.left_trigger > 1){
-                sliderOutLeft.setPower(0.5);
-                sliderOutRight.setPower(0.5);
-            }else if(gamepad1.right_trigger > 1){
-                sliderOutLeft.setPower(-0.5);
-                sliderOutRight.setPower(-0.5);
+
+            /**OUTAKE**/
+            if((gamepad2.right_stick_y > 0.2) || (gamepad2.right_stick_y < -0.2)){
+                if(gamepad2.right_stick_y > 0.2){
+                    sliderOutLeft.setPower(-gamepad2.right_stick_y);
+                    sliderOutRight.setPower(gamepad2.right_stick_y);
+
+                }else if(gamepad2.right_stick_y < -0.2){
+                    sliderOutLeft.setPower(-gamepad2.right_stick_y);
+                    sliderOutRight.setPower(gamepad2.right_stick_y);
+                }
             }else{
                 sliderOutLeft.setPower(0);
                 sliderOutRight.setPower(0);
             }
-
-            /**OUTAKE**/
             if(gamepad2.right_trigger > 1){
                 outakeLeft.setPosition(0.8);
                 outakeRight.setPosition(0.3);
@@ -81,12 +84,15 @@ public class TLOP_v2 extends LinearOpMode {
 
 
             /**MISC**/
-            if(gamepad2.right_stick_y > 1){
-                sliderHangLeft.setPower(1);
-                sliderHangRight.setPower(1);
-            }else if(gamepad2.right_stick_y < -1){
-                sliderHangLeft.setPower(-1);
-                sliderHangRight.setPower(-1);
+            if((gamepad2.left_stick_y > 0.2) || (gamepad2.left_stick_y < -0.2)){
+                if(gamepad2.left_stick_y > 0.2){
+                    sliderHangLeft.setPower(gamepad2.left_stick_y);
+                    sliderHangRight.setPower(gamepad2.left_stick_y);
+
+                }else if(gamepad2.left_stick_y < -0.2){
+                    sliderHangLeft.setPower(gamepad2.left_stick_y);
+                    sliderHangRight.setPower(gamepad2.left_stick_y);
+                }
             }else{
                 sliderHangLeft.setPower(0);
                 sliderHangRight.setPower(0);
