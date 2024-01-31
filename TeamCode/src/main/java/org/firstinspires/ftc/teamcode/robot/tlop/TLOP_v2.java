@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.robot.init.Chassis;
 public class TLOP_v2 extends LinearOpMode {
     //INTAKE
     private Servo armL, armR;
-//    private Servo clawl, clawr;
-    private Servo claw;
+    private Servo clawl, clawr;
+//    private Servo claw;
 
     //OUTAKE
     private DcMotor sliderOutLeft, sliderOutRight;
@@ -32,9 +32,9 @@ public class TLOP_v2 extends LinearOpMode {
         //INTAKE
         armL = hardwareMap.get(Servo.class, "armL");
         armR = hardwareMap.get(Servo.class, "armR");
-//        clawr = hardwareMap.get(Servo.class, "clawr");
-//        clawl = hardwareMap.get(Servo.class, "clawl");
-        claw = hardwareMap.get(Servo.class, "claw");
+        clawr = hardwareMap.get(Servo.class, "clawr");
+        clawl = hardwareMap.get(Servo.class, "clawl");
+//        claw = hardwareMap.get(Servo.class, "claw");
 
         //OUTAKE
         sliderOutLeft = hardwareMap.get(DcMotor.class, "sol");
@@ -66,26 +66,30 @@ public class TLOP_v2 extends LinearOpMode {
 
             /**INTAKE**/
             if(gamepad1.right_bumper){
-                //abre claw
-                claw.setPosition(0);
-//                clawr.setPosition(0);
-//                clawl.setPosition(0.5);
+//                //abre claw
+//                claw.setPosition(0);
+                clawr.setPosition(0);
+                clawl.setPosition(0.5);
             }else if(gamepad1.left_bumper){
                 //cierra claw
-                claw.setPosition(0.5);
-//                clawr.setPosition(0.5);
-//                clawl.setPosition(0);
+//                claw.setPosition(0.5);
+                clawr.setPosition(0.5);
+                clawl.setPosition(0);
             }
             if(gamepad1.right_trigger > 0.2){
                 //sube arm
                 armL.setPosition(1);
                 armR.setPosition(0);
-                claw.setPosition(0);
+//                claw.setPosition(0);
+                clawr.setPosition(0);
+                clawl.setPosition(0.5);
             }else if(gamepad1.left_trigger > 0.2){
                 //baja arm
                 armL.setPosition(0.15);
                 armR.setPosition(0.85);
-                claw.setPosition(0);
+//                claw.setPosition(0);
+                clawr.setPosition(0);
+                clawl.setPosition(0.5);
             }
 
             /**OUTAKE**/
@@ -106,13 +110,13 @@ public class TLOP_v2 extends LinearOpMode {
                 outakeLeft.setPosition(0.4);
                 outakeRight.setPosition(0.55);
             }else{
-                outakeLeft.setPosition(0.7);
-                outakeRight.setPosition(0.25);
+                outakeLeft.setPosition(0.71);
+                outakeRight.setPosition(0.24);
             }
             if(gamepad2.left_trigger > 0.2){
-                outake.setPosition(0.25);
-            }else{
                 outake.setPosition(0.75);
+            }else{
+                outake.setPosition(0.25);
             }
             if(gamepad2.dpad_up){
                 //jack goes up
@@ -149,9 +153,10 @@ public class TLOP_v2 extends LinearOpMode {
                 plane.setPosition(0);
             }
 
-            telemetry.addData("arm right", armR.getPosition());
-            telemetry.addData("arm left", armL.getPosition());
-            telemetry.addData("claw", claw.getPosition());
+            chassis.postCurrentPosition();
+            telemetry.addData("Orientation", chassis.getCurrentPosition().getOrientation());
+            telemetry.addData("x", chassis.getCurrentPosition().getXPosition());
+            telemetry.addData("y", chassis.getCurrentPosition().getYPosition());
             telemetry.update();
         }
     }

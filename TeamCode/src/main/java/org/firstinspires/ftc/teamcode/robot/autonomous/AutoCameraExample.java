@@ -15,19 +15,18 @@ public class AutoCameraExample extends LinearOpMode {
         OpenCvCamera camera = new OpenCvCamera(hardwareMap, telemetry);
 
         waitForStart();
-        while (!isStopRequested()){
-            while(opModeIsActive()) {
-                //chassis.goToPosition(new Position(5, 0, 0), 0.5);
-                while (position != "center") {
-                    position = camera.getDesiredAprilTagPosition(6);
-                    chassis.leftRun(0.5);
-                    telemetry.update();
-                }
-                chassis.leftRun(0);
-                telemetry.addData("Position found: ", position);
+        while (!isStopRequested() && opModeIsActive()){
+            //chassis.goToPosition(new Position(5, 0, 0), 0.5);
+            while (position != "center") {
+                position = camera.getDesiredAprilTagPosition(6);
+                chassis.leftRun(0.5);
                 telemetry.update();
-                sleep(30000);
             }
+            chassis.leftRun(0);
+            telemetry.addData("Position found: ", position);
+            telemetry.update();
+            sleep(30000);
+
         }
     }
 }
