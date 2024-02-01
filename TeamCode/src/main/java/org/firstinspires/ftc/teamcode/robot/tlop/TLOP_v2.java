@@ -85,8 +85,8 @@ public class TLOP_v2 extends LinearOpMode {
                 clawl.setPosition(0.5);
             }else if(gamepad1.left_trigger > 0.2){
                 //baja arm
-                armL.setPosition(0.15);
-                armR.setPosition(0.85);
+                armL.setPosition(0.17);
+                armR.setPosition(0.83);
 //                claw.setPosition(0);
                 clawr.setPosition(0);
                 clawl.setPosition(0.5);
