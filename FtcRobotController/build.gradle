@@ -23,4 +23,8 @@ android {
     namespace = 'com.qualcomm.ftcrobotcontroller'
 }
 
+dependencies {
+    implementation files('..\\TeamCode\\lib\\VuforiaEngine.jar')
+}
+
 apply from: '../build.dependencies.gradle'
