@@ -2,11 +2,8 @@ package org.firstinspires.ftc.teamcode.robot.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.odometry.position.Position;
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
-import org.firstinspires.ftc.teamcode.robot.init.OpenCvCamera;
 
 
 @Autonomous

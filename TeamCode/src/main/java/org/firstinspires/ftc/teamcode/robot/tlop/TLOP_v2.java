@@ -119,7 +119,7 @@ public class TLOP_v2 extends LinearOpMode {
             if(gamepad2.left_trigger > 0.2){
                 outake.setPosition(0.75);
             }else{
-                outake.setPosition(0.25);
+                outake.setPosition(0.35);
             }
             if(gamepad2.dpad_up){
                 //jack goes up

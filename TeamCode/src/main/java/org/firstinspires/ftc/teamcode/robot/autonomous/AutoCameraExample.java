@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
-import org.firstinspires.ftc.teamcode.robot.init.OpenCvCamera;
+import org.firstinspires.ftc.teamcode.robot.init.AprilTagOpenCvCamera;
 
 @Autonomous
 public class AutoCameraExample extends LinearOpMode {
@@ -12,7 +12,7 @@ public class AutoCameraExample extends LinearOpMode {
 
     public void runOpMode(){
         Chassis chassis = new Chassis(hardwareMap, telemetry);
-        OpenCvCamera camera = new OpenCvCamera(hardwareMap, telemetry);
+        AprilTagOpenCvCamera camera = new AprilTagOpenCvCamera(hardwareMap, telemetry);
 
         waitForStart();
         while (!isStopRequested() && opModeIsActive()){

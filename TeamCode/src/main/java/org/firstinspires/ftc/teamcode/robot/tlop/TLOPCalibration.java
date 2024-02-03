@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.robot.init.Chassis;
-import org.firstinspires.ftc.teamcode.robot.init.OpenCvCamera;
+import org.firstinspires.ftc.teamcode.robot.init.AprilTagOpenCvCamera;
+import org.firstinspires.ftc.teamcode.robot.init.ColorAverageOpenCvCamera;
 
 @TeleOp
 public class TLOPCalibration extends LinearOpMode {
@@ -16,8 +17,8 @@ public class TLOPCalibration extends LinearOpMode {
         cameraServo = hardwareMap.get(Servo.class, "cameraS");
         Chassis chassis = new Chassis(hardwareMap, telemetry);
 
-        OpenCvCamera camera = new OpenCvCamera(hardwareMap, telemetry);
-        sleep(1500);
+        AprilTagOpenCvCamera aprilCamera = new AprilTagOpenCvCamera(hardwareMap, telemetry);
+        ColorAverageOpenCvCamera colorCamera = new ColorAverageOpenCvCamera(hardwareMap);
         telemetry.addData("Open Cv Camera", "ready to roll");
         telemetry.update();
 
@@ -43,7 +44,9 @@ public class TLOPCalibration extends LinearOpMode {
             telemetry.addData("Orientation", chassis.getCurrentPosition().getOrientation());
             telemetry.addData("x", chassis.getCurrentPosition().getXPosition());
             telemetry.addData("y", chassis.getCurrentPosition().getYPosition());
-            camera.telemetryAprilTag();
+            aprilCamera.telemetryAprilTag();
+            colorCamera.setAlliance("red");
+            int element_zone = colorCamera.elementDetection(telemetry);
         }
     }
 }

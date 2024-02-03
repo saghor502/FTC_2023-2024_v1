@@ -11,7 +11,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-public class OpenCvCamera {
+public class AprilTagOpenCvCamera {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     private AprilTagProcessor aprilTag;
@@ -20,8 +20,8 @@ public class OpenCvCamera {
 
     private static Telemetry telemetry;
 
-    public OpenCvCamera(HardwareMap hardwareMap, Telemetry telemetry){
-        OpenCvCamera.telemetry = telemetry;
+    public AprilTagOpenCvCamera(HardwareMap hardwareMap, Telemetry telemetry){
+        AprilTagOpenCvCamera.telemetry = telemetry;
 
         // Create the AprilTag processor the easy way.
         aprilTag = AprilTagProcessor.easyCreateWithDefaults();
