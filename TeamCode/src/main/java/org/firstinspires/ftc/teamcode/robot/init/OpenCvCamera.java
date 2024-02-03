@@ -64,11 +64,11 @@ public class OpenCvCamera {
         for (AprilTagDetection detection : currentDetections) {
             if(detection.metadata != null){
                 if(detection.id == aprilTagId){
-                    if(detection.ftcPose.x > 1){
+                    if(detection.ftcPose.x > 2){
                         position = "left";
-                    }else if(detection.ftcPose.x < 1 && detection.ftcPose.x > -1){
+                    }else if(detection.ftcPose.x < 2 && detection.ftcPose.x > -2){
                         position = "center";
-                    }else if(detection.ftcPose.x < 1){
+                    }else if(detection.ftcPose.x < 2){
                         position = "right";
                     }
                     telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));

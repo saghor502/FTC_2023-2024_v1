@@ -107,8 +107,11 @@ public class TLOP_v2 extends LinearOpMode {
                 sliderOutRight.setPower(0);
             }
             if(gamepad2.right_trigger > 0.2){
-                outakeLeft.setPosition(0.4);
-                outakeRight.setPosition(0.55);
+                outakeLeft.setPosition(0.09);
+                outakeRight.setPosition(0.81);
+            }else if(gamepad2.right_bumper){
+                outakeLeft.setPosition(0.5);
+                outakeRight.setPosition(0.65);
             }else{
                 outakeLeft.setPosition(0.71);
                 outakeRight.setPosition(0.24);

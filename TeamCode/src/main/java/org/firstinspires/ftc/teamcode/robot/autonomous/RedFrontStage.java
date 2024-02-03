@@ -27,10 +27,12 @@ public class RedFrontStage  extends LinearOpMode {
     //MISC
     private DcMotor sliderHangLeft, sliderHangRight;
     private Servo plane;
+    private Servo cameraServo;
 
     //AUTONOMOUS VARIABLES
     String position = "";
-    int aprilTagId = 0;
+    String aprilTagPosition = "";
+    int aprilTagId = 8;
     double timePassed = 0;
 
     public void runOpMode(){
@@ -56,73 +58,102 @@ public class RedFrontStage  extends LinearOpMode {
         sliderHangLeft = hardwareMap.get(DcMotor.class, "shl");
         sliderHangRight = hardwareMap.get(DcMotor.class, "shr");
         plane = hardwareMap.get(Servo.class, "plane");
+        cameraServo = hardwareMap.get(Servo.class, "cameraS");
 
         closeClaw();
         time.startTime();
 
-        while ((position == "") && (time.seconds() < 5)) {
-            position = camera.getDesiredAprilTagPosition(6);
-            telemetry.addData("Time passed", time.seconds());
-            telemetry.addData("Searching for", "apriltag");
-            telemetry.update();
-        }
-        telemetry.addData("Apriltag found", position);
-        telemetry.update();
-
         waitForStart();
+
         while (!isStopRequested() && opModeIsActive()){
             time.reset();
-            /**TIRAR PATO Y DEJAR PIXEL**/
-            chassis.goToDistance(50,0,0.5);
-            armDown();
-            if(position == "center"){
-                //center
-                //place pixel
-                openClaw();
-                aprilTagId = 5;
-            }else if(position == "right"){
-                //right
-                chassis.turnDegrees(-50, 0.5);
-                openClaw();
-                aprilTagId = 6;
+            if(aprilTagPosition == ""){
+                cameraServo.setPosition(0.75);
+                sleep(800);
+                position = camera.getDesiredAprilTagPosition(aprilTagId);
+                if(position == "center"){
+                    aprilTagPosition = "right";
+                }
+            }
+            if(aprilTagPosition == ""){
+                cameraServo.setPosition(0.65);
+                sleep(800);
+                position = camera.getDesiredAprilTagPosition(aprilTagId);
+                if(position == "center"){
+                    aprilTagPosition = "center";
+                }
+            }
+            if(aprilTagPosition == ""){
+                cameraServo.setPosition(0.55);
+                sleep(800);
+                position = camera.getDesiredAprilTagPosition(aprilTagId);
+                if(position == "center"){
+                    aprilTagPosition = "left";
+                }
+            }
+            if(aprilTagPosition != ""){
+                telemetry.addData("Apriltag found", aprilTagPosition);
+                telemetry.update();
             }else{
-                //left
-                chassis.turnDegrees(50, 0.5);
-                openClaw();
-                aprilTagId = 4;
+                telemetry.addData("No Apriltag found", "bombing left side");
+                aprilTagPosition = "left";
+                telemetry.update();
             }
 
-            //TODO: capaz y tiene que regresar a orientación 0 e ir un poco atrás para pasar el puente
+            /**TIRAR PATO Y DEJAR PIXEL**/
+            chassis.goToDistanceX(-70,1);
+            telemetry.addData("complete", "yes");
+            armDown();
+//            if(position == "center"){
+//                //center
+//                //place pixel
+//                openClaw();
+//                aprilTagId = 5;
+//            }else if(position == "right"){
+//                //right
+//                chassis.turnDegrees(-50, 0.5);
+//                openClaw();
+//                aprilTagId = 6;
+//            }else{
+//                //left
+//                chassis.turnDegrees(50, 0.5);
+//                openClaw();
+//                aprilTagId = 4;
+//            }
+//
+//            //TODO: capaz y tiene que regresar a orientación 0 e ir un poco atrás para pasar el puente
+//
+//            /**DEJAR PIXEL EN BACKSTAGE **/
+//            chassis.turnDegrees(90, 0.5);
+//            chassis.goToDistance(-50,70,0.5);
+//            timePassed = time.seconds();
+//            while ((position != "center") || (time.seconds() < timePassed + 5)) {
+//                if(position != "center"){
+//                    position = camera.getDesiredAprilTagPosition(aprilTagId);
+//                    chassis.leftRun(0.5);
+//                    chassis.postCurrentPosition();
+//                    telemetry.update();
+//                }else{
+//                    chassis.stopChassis();
+//                    chassis.postCurrentPosition();
+//                }
+//                if(time.seconds() < timePassed + 5) {
+//                    jackUp(1);
+//                if(time.seconds() < timePassed + 2){
+//                    drawSlidersOut(0.5);
+//                }
+//                }else{
+//                    stopJack();
+//                    stopSlidersOut();
+//                }
+//            }
 
-            /**DEJAR PIXEL EN BACKSTAGE **/
-            chassis.turnDegrees(90, 0.5);
-            chassis.goToDistance(50,70,0.5);
-            timePassed = time.seconds();
-            while ((position != "center") || (time.seconds() < timePassed + 5)) {
-                if(position != "center"){
-                    position = camera.getDesiredAprilTagPosition(aprilTagId);
-                    chassis.leftRun(0.5);
-                    chassis.postCurrentPosition();
-                    telemetry.update();
-                }else{
-                    chassis.stopChassis();
-                    chassis.postCurrentPosition();
-                }
-                if(time.seconds() < timePassed + 5) {
-                    jackUp(1);
-                if(time.seconds() < timePassed + 2){
-                    drawSlidersOut(0.5);
-                }
-                }else{
-                    stopJack();
-                    stopSlidersOut();
-                }
-            }
 
 
 
-            chassis.goToDistance(35, 70, 0.5);
-            chassis.goToDistance(35, -10, 0.5); //TODO: a ver si esto puede ir más rápido
+
+//            chassis.goToDistance(-35, 70, 0.5);
+//            chassis.goToDistance(-35, -10, 0.5); //TODO: a ver si esto puede ir más rápido
 
             /**TOMAR PIXEL**/
 

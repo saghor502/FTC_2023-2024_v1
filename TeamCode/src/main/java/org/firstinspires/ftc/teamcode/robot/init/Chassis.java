@@ -28,7 +28,7 @@ public class Chassis {
 
     private double ticksPerInches = 298.74213811316037735849056603773;
 
-    private double maxdistanceError = 0.5;
+    private double maxdistanceError = 2;
     private double maxorientationError = 1;
     double initialhead = 0;
 
@@ -79,42 +79,11 @@ public class Chassis {
        int absBotHeading = Math.abs(botHeading);
 
        //TODO: cancelar los errores de los encoders mientras el robot gira
-        if((absBotHeading >= 0) && (absBotHeading < 3)){
+        if((absBotHeading >= 0) && (absBotHeading < 180)){
             botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil(fbaverage/ticksPerInches) * 100)/100);
-            currentPosition.setYPosition((Math.ceil(heposition/ticksPerInches) * 100)/100);
-        }else if((absBotHeading >= 3) && (absBotHeading < 87)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil((fbaverage/ticksPerInches) * Math.cos(botHeading)) * 100)/100);
-            currentPosition.setYPosition((Math.ceil((heposition/ticksPerInches) * Math.sin(botHeading)) * 100)/100);
-
-        }else if((absBotHeading >= 87) && (absBotHeading < 93)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil(fbaverage/ticksPerInches) * 100)/100);
-            currentPosition.setYPosition((Math.ceil(leposition/ticksPerInches) * 100)/100);
-        }else if((absBotHeading >= 93) && (absBotHeading < 177)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil((fbaverage/ticksPerInches) * Math.cos(botHeading)) * 100)/100);
-            currentPosition.setYPosition((Math.ceil((leposition/ticksPerInches) * Math.sin(botHeading)) * 100)/100);
-
-        }else if((absBotHeading >= 177) && (absBotHeading < 183)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil(-fbaverage/ticksPerInches) * 100)/100);
-            currentPosition.setYPosition((Math.ceil(-heposition/ticksPerInches) * 100)/100);
-        }else if((absBotHeading >= 183) && (absBotHeading < 267)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil((-fbaverage/ticksPerInches) * Math.cos(botHeading)) * 100)/100);
-            currentPosition.setYPosition((Math.ceil((-heposition/ticksPerInches) * Math.sin(botHeading)) * 100)/100);
-
-        }else if((absBotHeading >= 267) && (absBotHeading < 273)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil(-heposition/ticksPerInches) * 100)/100);
-            currentPosition.setYPosition((Math.ceil(-leposition/ticksPerInches) * 100)/100);
-        }else if((absBotHeading >= 273) && (absBotHeading < 357)){
-            botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startingHead;
-            currentPosition.setXPosition((Math.ceil((-heposition/ticksPerInches) * Math.cos(botHeading)) * 100)/100);
-            currentPosition.setYPosition((Math.ceil((-leposition/ticksPerInches) * Math.sin(botHeading)) * 100)/100);
-        }else if(absBotHeading >= 357){
+            currentPosition.setXPosition((Math.ceil((fbaverage/ticksPerInches) * Math.cos(absBotHeading)) * 100)/100);
+            currentPosition.setYPosition((Math.ceil((heposition/ticksPerInches) * Math.sin(absBotHeading)) * 100)/100);
+        }else{
             int cnt = 0;
             double range = Math.sqrt(absBotHeading);
 
@@ -131,7 +100,7 @@ public class Chassis {
                     }
                 }
             }
-            startingHead = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - 360 * cnt;
+            startingHead = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - 180 * cnt;
             botHeading = (int) imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         }
 
@@ -193,24 +162,11 @@ public class Chassis {
        int signY = (int) (distanceToY/Math.abs(distanceToY));
        int orientationSign = 0;
 
-       telemetry.addData("currentX", currentX);
-       telemetry.addData("positionX", x);
-
-       telemetry.addData("currentY", currentY);
-       telemetry.addData("positionY", y);
-
        forward(0.5);
 
        while((Math.abs(distanceToX) > maxdistanceError) || (Math.abs(distanceToY) > maxdistanceError)){
-           if(currentPosition.getOrientation() != originalOrientation){
-               if(Math.abs(compensateDegrees) > 5){
-                   compensatePower = 0.2 * orientationSign;
-               }else{
-                   compensatePower = 0;
-               }
-           }
+           postCurrentPosition();
            currentX = currentPosition.getXPosition();
-
            currentY = currentPosition.getYPosition();
 
            distanceToX = currentX - x;
@@ -218,41 +174,87 @@ public class Chassis {
 
            signX = (int) (distanceToX/Math.abs(distanceToX));
            signY = -(int) (distanceToY/Math.abs(distanceToY));
+
+           if(currentPosition.getOrientation() != originalOrientation){
+               if(Math.abs(compensateDegrees) > 5){
+                   compensatePower = 0.3 * orientationSign;
+               }else{
+                   compensatePower = 0;
+               }
+           }
            if(currentPosition.getOrientation() != 0){
-               orientationSign = currentPosition.getOrientation() / Math.abs(currentPosition.getOrientation());
+               orientationSign = currentPosition.getOrientation() == 0 ? 0 :
+                       currentPosition.getOrientation()/ Math.abs(currentPosition.getOrientation());
            }
 
-           if(Math.abs(distanceToX) > maxdistanceError + 25){
-               fbpower = power * signX;
-           }else if((Math.abs(distanceToX) >= maxdistanceError + 25) && (Math.abs(distanceToX) < maxdistanceError + 10)){
-               fbpower = 0.3 * signX;
+           if(Math.abs(distanceToX) > maxorientationError + 20){
+               fbpower = power * signX * Math.abs(Math.cos(Math.toRadians(currentPosition.getOrientation())));
            }else{
-               fbpower = 0.25 * signX;
+               fbpower = 0.3 * signX * Math.abs(Math.cos(Math.toRadians(currentPosition.getOrientation())));
            }
 
-           if(Math.abs(distanceToY) > maxdistanceError + 25){
-               rlpower = power * signY;
-           }else if((Math.abs(distanceToY) >= maxdistanceError + 25) && (Math.abs(distanceToY) < maxdistanceError + 10)){
-               rlpower = 0.3 * signY;
+           if(Math.abs(distanceToY) > maxorientationError + 20){
+               rlpower = power * signY * Math.abs(Math.sin(Math.toRadians(currentPosition.getOrientation())));
            }else{
-               rlpower = 0.25 * signY;
+               rlpower = 0.3 * signY * Math.abs(Math.sin(Math.toRadians(currentPosition.getOrientation())));
            }
+
+           telemetry.addData("fbPower", fbpower);
+           telemetry.addData("rlPower", rlpower);
+           telemetry.addData("distance to x", distanceToX);
+           telemetry.addData("distance to Y", distanceToY);
 
            move(fbpower, rlpower, compensatePower);
-           telemetry.addData("distance to x", distanceToX);
-           telemetry.addData("", "");
-           postCurrentPosition();
        }
+       telemetry.addData("done", "yees");
+       telemetry.update();
        stopChassis();
        goToDegrees(originalOrientation, 0.5);
        postCurrentPosition();
    }
 
+    public void goToDistanceX(double x, double power){
+        double currentX = currentPosition.getXPosition();
+        int originalOrientation = currentPosition.getOrientation();
+
+        double distanceToX = currentX - x;
+        double compensateDegrees = 0;
+
+        double signX = distanceToX/Math.abs(distanceToX);
+        int orientationSign = 0;
+
+        forward(0.5);
+
+        while(Math.abs(distanceToX) > maxdistanceError){
+            postCurrentPosition();
+            currentX = currentPosition.getXPosition();
+
+            distanceToX = currentX - x;
+
+            signX = distanceToX/Math.abs(distanceToX);
+
+            if(Math.abs(distanceToX) > maxorientationError + 20){
+                move(power * signX,0,0);
+            }else if((Math.abs(distanceToX) <= maxorientationError + 20) && (Math.abs(distanceToX) > maxorientationError + 10)){
+                move(0.5 * signX,0,0);
+            }else{
+                move(0.2 * signX,0,0);
+            }
+
+            telemetry.addData("distance to x", distanceToX);
+        }
+        telemetry.addData("done", "yees");
+        telemetry.update();
+        postCurrentPosition();
+        stopChassis();
+        goToDegrees(originalOrientation, 0.5);
+    }
+
    public void goToDegrees(int degrees, double power){
        int currentDegrees = currentPosition.getOrientation();
        int degreesToTheta = currentDegrees + degrees;
 
-       int orientationSign = degrees/Math.abs(degrees);
+       int orientationSign = degrees == 0 ? 0 : degrees/Math.abs(degrees);
 
        while(Math.abs(degreesToTheta) > maxorientationError){
 
@@ -367,6 +369,7 @@ public class Chassis {
     /**POWER RUNNING**/
     public void move(double forwardPower, double leftPower, double turnPower){
         //ly = forward, lx = leftRun, rx = turnRight
+        telemetry.addData("status", "moving");
         double leftY;
         double leftX;
         double rightX;
