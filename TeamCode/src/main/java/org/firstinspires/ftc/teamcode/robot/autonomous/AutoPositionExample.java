@@ -15,9 +15,7 @@ public class AutoPositionExample  extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()){
             while(opModeIsActive()){
-                chassis.goToDistance(60, 0, 1);
-                sleep(1000);
-                chassis.goToDegrees(90, 0.5);
+                chassis.goToDistance(10, 0, 1);
                 sleep(1000);
                 telemetry.addData("x", chassis.getCurrentPosition().getXPosition());
                 telemetry.addData("y", chassis.getCurrentPosition().getYPosition());

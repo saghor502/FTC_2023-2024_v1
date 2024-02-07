@@ -23,11 +23,13 @@ public class TLOP_v2 extends LinearOpMode {
 
     //MISC
     private DcMotor sliderHangLeft, sliderHangRight;
-    private Servo plane;
+//    private Servo plane;
+    private Servo cameraServo;
 
 
     @Override
     public void runOpMode() {
+
         Chassis chassis = new Chassis(hardwareMap, telemetry);
         //INTAKE
         armL = hardwareMap.get(Servo.class, "armL");
@@ -48,13 +50,20 @@ public class TLOP_v2 extends LinearOpMode {
         //MISC
         sliderHangLeft = hardwareMap.get(DcMotor.class, "shl");
         sliderHangRight = hardwareMap.get(DcMotor.class, "shr");
-        plane = hardwareMap.get(Servo.class, "plane");
+//        plane = hardwareMap.get(Servo.class, "plane");
+        cameraServo = hardwareMap.get(Servo.class, "cameraS");
 
 
         /**Initial setup**/
-        outakeLeft.setPosition(0.3);
-        outakeRight.setPosition(0.8);
-        plane.setPosition(0);
+        outakeLeft.setPosition(0.70);
+        outakeRight.setPosition(0.25);
+        outake.setPosition(0.35);
+        armL.setPosition(1);
+        armR.setPosition(0);
+        clawr.setPosition(0);
+        clawl.setPosition(0.5);
+        cameraServo.setPosition(0.65);
+//        plane.setPosition(0);
         //baja arm
 
         waitForStart();
@@ -66,7 +75,7 @@ public class TLOP_v2 extends LinearOpMode {
 
             /**INTAKE**/
             if(gamepad1.right_bumper){
-//                //abre claw
+                //abre claw
 //                claw.setPosition(0);
                 clawr.setPosition(0);
                 clawl.setPosition(0.5);
@@ -107,11 +116,11 @@ public class TLOP_v2 extends LinearOpMode {
                 sliderOutRight.setPower(0);
             }
             if(gamepad2.right_trigger > 0.2){
-                outakeLeft.setPosition(0.09);
-                outakeRight.setPosition(0.81);
+                outakeLeft.setPosition(0.5);  //baja
+                outakeRight.setPosition(0.45); //sube
             }else if(gamepad2.right_bumper){
-                outakeLeft.setPosition(0.5);
-                outakeRight.setPosition(0.65);
+                outakeLeft.setPosition(0.95);
+                outakeRight.setPosition(0);
             }else{
                 outakeLeft.setPosition(0.71);
                 outakeRight.setPosition(0.24);
@@ -150,11 +159,11 @@ public class TLOP_v2 extends LinearOpMode {
                 sliderHangRight.setPower(0);
             }
 
-            if(gamepad1.x){
-                plane.setPosition(0.5);
-            }else{
-                plane.setPosition(0);
-            }
+//            if(gamepad1.x){
+//                plane.setPosition(0.5);
+//            }else{
+//                plane.setPosition(0);
+//            }
 
             chassis.postCurrentPosition();
             telemetry.addData("Orientation", chassis.getCurrentPosition().getOrientation());
