@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.robot.init;
+package org.firstinspires.ftc.teamcode.robot.init.cameras;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -20,7 +21,7 @@ public class AprilTagOpenCvCamera {
 
     private static Telemetry telemetry;
 
-    public AprilTagOpenCvCamera(HardwareMap hardwareMap, Telemetry telemetry){
+    public AprilTagOpenCvCamera(HardwareMap hardwareMap, Telemetry telemetry, String cameraName){
         AprilTagOpenCvCamera.telemetry = telemetry;
 
         // Create the AprilTag processor the easy way.
@@ -29,7 +30,7 @@ public class AprilTagOpenCvCamera {
         // Create the vision portal the easy way.
         if (USE_WEBCAM) {
             visionPortal = VisionPortal.easyCreateWithDefaults(
-                    hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
+                    hardwareMap.get(WebcamName.class, cameraName), aprilTag);
         } else {
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     BuiltinCameraDirection.BACK, aprilTag);
@@ -79,7 +80,11 @@ public class AprilTagOpenCvCamera {
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
         }
-
         return position;
+    }
+
+
+    public void stopCameraStream(){
+        visionPortal.stopStreaming();
     }
 }

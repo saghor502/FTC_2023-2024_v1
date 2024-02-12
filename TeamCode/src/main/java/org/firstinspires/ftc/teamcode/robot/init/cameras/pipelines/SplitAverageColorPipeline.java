@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.init.pipelines;
+package org.firstinspires.ftc.teamcode.robot.init.cameras.pipelines;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -45,8 +45,8 @@ public class SplitAverageColorPipeline extends OpenCvPipeline {
         //Defining Zones
         //Rect(top left x, top left y, bottom right x, bottom right y)
         // TODO: calibrate this positions
-        zone1 = input.submat(new Rect(0, 180, 115, 115)); //center
-        zone2 = input.submat(new Rect(316, 170, 253, 230)); //left
+        zone1 = input.submat(new Rect(350, 460, 150, 150)); //center
+        zone2 = input.submat(new Rect(950, 480, 150, 150)); //left
 
         //Averaging the colors in the zones
         avgColor1 = Core.mean(zone1);
@@ -59,7 +59,7 @@ public class SplitAverageColorPipeline extends OpenCvPipeline {
         distance1 = color_distance(avgColor1, ELEMENT_COLOR);
         distance2 = color_distance(avgColor2, ELEMENT_COLOR);
 
-        if ((distance1 > 195) && (distance2 > 190)){
+        if ((distance1 > 205) && (distance2 > 190)){
             color_zone = 3;
             max_distance = -1;
         }else{
@@ -69,9 +69,11 @@ public class SplitAverageColorPipeline extends OpenCvPipeline {
                 //telemetry.addData("Zone 1 Has Element", distance1);
                 color_zone = 1;
 
+            }else if(max_distance == distance2){
+                color_zone = 3;
             }else{
                 //telemetry.addData("Zone 2 Has Element", distance2);
-                color_zone = 2;
+                color_zone = 3;
             }
         }
 
