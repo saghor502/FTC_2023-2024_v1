@@ -68,8 +68,8 @@ public class RobotInit {
     }
 
     public void armDown(){
-        armL.setPosition(1);
-        armR.setPosition(0);
+        armL.setPosition(0.95);
+        armR.setPosition(0.05);
     }
     public void armUp(){
         armL.setPosition(0.17);

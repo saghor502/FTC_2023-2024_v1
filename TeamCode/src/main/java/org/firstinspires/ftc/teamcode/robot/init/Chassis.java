@@ -86,6 +86,16 @@ public class Chassis {
         initialYPosition = globalPositionUpdate.returnYCoordinate();
     }
 
+    public double getRightEncoderPos(){
+        return rightEncoder.getCurrentPosition();
+    }
+    public double getLeftEncoderPos(){
+        return leftEncoder.getCurrentPosition();
+    }
+    public double getFrontEncoderPos(){
+        return frontEncoder.getCurrentPosition();
+    }
+
     public void goToPosition (double targetXPosition, double targetYPosition, double robotPower){
         double desiredRobotOrientation = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         postCurrentPosition();
