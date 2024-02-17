@@ -29,7 +29,6 @@ public class SafeMode  extends LinearOpMode {
             sleep(1000);
             robot.armDown();
 
-
             chassis.stopChassis();
 
             sleep(30000);
