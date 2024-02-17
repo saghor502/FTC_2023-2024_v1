@@ -21,7 +21,6 @@ public class RobotInit {
 
     //MISC
     public DcMotor sliderHangLeft, sliderHangRight;
-    private Servo cameraServo;
 
     public RobotInit(HardwareMap hardwareMap, Telemetry telemetry){
         //INTAKE
@@ -42,21 +41,20 @@ public class RobotInit {
         //MISC
         sliderHangLeft = hardwareMap.get(DcMotor.class, "shl");
         sliderHangRight = hardwareMap.get(DcMotor.class, "shr");
-        cameraServo = hardwareMap.get(Servo.class, "cameraS");
     }
 
-    public void cameraRight(){
-        cameraServo.setPosition(0.75);
-    }
-    public void cameraMiddle(){
-        cameraServo.setPosition(0.65);
-    }
-    public void cameraLeft(){
-        cameraServo.setPosition(0.55);
-    }
-    public void storeCamera(){
-        cameraServo.setPosition(1);
-    }
+//    public void cameraRight(){
+//        cameraServo.setPosition(0.75);
+//    }
+//    public void cameraMiddle(){
+//        cameraServo.setPosition(0.65);
+//    }
+//    public void cameraLeft(){
+//        cameraServo.setPosition(0.55);
+//    }
+//    public void storeCamera(){
+//        cameraServo.setPosition(1);
+//    }
 
     public void closeClaw(){
         clawr.setPosition(0);

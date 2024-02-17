@@ -19,7 +19,6 @@ public class TLOP_v2 extends LinearOpMode {
 
         /**Initial setup**/
         robot.boxMiddle();
-        robot.storeCamera();
 
         waitForStart();
 

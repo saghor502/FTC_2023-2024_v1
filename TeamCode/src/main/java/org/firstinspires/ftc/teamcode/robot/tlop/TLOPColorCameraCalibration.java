@@ -11,15 +11,12 @@ import org.firstinspires.ftc.teamcode.robot.init.cameras.ColorAverageOpenCvCamer
 
 @TeleOp(name="Color Camera Test", group="3 Testers")
 public class TLOPColorCameraCalibration extends LinearOpMode {
-    private Servo cameraServo;
 
     @Override
     public void runOpMode(){
-        cameraServo = hardwareMap.get(Servo.class, "cameraS");
         Chassis chassis = new Chassis(hardwareMap, telemetry);
         ColorAverageOpenCvCamera colorCamera = new ColorAverageOpenCvCamera(hardwareMap, "Webcam 1");
         RobotInit robot = new RobotInit(hardwareMap, telemetry);
-        robot.storeCamera();
 
         waitForStart();
         while (!isStopRequested()){

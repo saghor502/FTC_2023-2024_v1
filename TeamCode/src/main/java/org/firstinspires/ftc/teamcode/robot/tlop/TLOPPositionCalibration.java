@@ -10,11 +10,9 @@ import org.firstinspires.ftc.teamcode.robot.init.cameras.ColorAverageOpenCvCamer
 
 @TeleOp(name="Position Test", group="3 Tester")
 public class TLOPPositionCalibration extends LinearOpMode {
-    private Servo cameraServo;
 
     @Override
     public void runOpMode(){
-        cameraServo = hardwareMap.get(Servo.class, "cameraS");
         Chassis chassis = new Chassis(hardwareMap, telemetry);
 
         waitForStart();

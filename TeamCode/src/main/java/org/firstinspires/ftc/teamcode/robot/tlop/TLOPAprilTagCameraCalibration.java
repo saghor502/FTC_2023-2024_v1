@@ -11,16 +11,11 @@ import org.firstinspires.ftc.teamcode.robot.init.cameras.ColorAverageOpenCvCamer
 
 @TeleOp(name="April Camera Test", group="3 Testers")
 public class TLOPAprilTagCameraCalibration extends LinearOpMode {
-    private Servo cameraServo;
 
     @Override
     public void runOpMode(){
-        cameraServo = hardwareMap.get(Servo.class, "cameraS");
         Chassis chassis = new Chassis(hardwareMap, telemetry);
         AprilTagOpenCvCamera aprilCamera = new AprilTagOpenCvCamera(hardwareMap, telemetry, "Webcam 2");
-        ColorAverageOpenCvCamera colorCamera = new ColorAverageOpenCvCamera(hardwareMap, "Webcam 1");
-        RobotInit robot = new RobotInit(hardwareMap, telemetry);
-        robot.storeCamera();
 
         waitForStart();
         while (!isStopRequested()){
@@ -32,22 +27,18 @@ public class TLOPAprilTagCameraCalibration extends LinearOpMode {
             if(gamepad1.right_trigger > 0.2){
                 telemetry.speak("Bwomp");
             }
-            if(gamepad1.dpad_left){
-                robot.cameraLeft();
-            }else if(gamepad1.dpad_up){
-                robot.cameraMiddle();
-            }else if(gamepad1.dpad_right){
-                robot.cameraRight();
-            }else{
-                robot.storeCamera();
-            }
+//            if(gamepad1.dpad_left){
+//                robot.cameraLeft();
+//            }else if(gamepad1.dpad_up){
+//                robot.cameraMiddle();
+//            }else if(gamepad1.dpad_right){
+//                robot.cameraRight();
+//            }else{
+//                robot.storeCamera();
+//            }
 
             aprilCamera.telemetryAprilTag();
-            colorCamera.setAlliance("red");
-            int element_zone = colorCamera.elementDetection(telemetry);
-            telemetry.addData("red duck", element_zone);
         }
-        colorCamera.stopCameraStream();
         aprilCamera.stopCameraStream();
     }
 }

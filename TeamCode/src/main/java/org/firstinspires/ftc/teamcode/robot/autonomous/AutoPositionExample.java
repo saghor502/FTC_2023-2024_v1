@@ -13,12 +13,7 @@ public class AutoPositionExample  extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested() && opModeIsActive()){
-            chassis.goToPosition(60, 0, 0.8);
-            sleep(1000);
-            chassis.turnDegrees(-90, 0.5);
-            sleep(1000);
-
-            sleep(30000);
+            chassis.goToXDistance(5, 0.5);
         }
     }
 }

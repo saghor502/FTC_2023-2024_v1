@@ -29,7 +29,7 @@ public class Chassis {
 
     private Position currentPosition = new Position(0, 0, 0);
 
-    private final double ticksPerInches = 238.99371049052830188679245283018;
+    private final double ticksPerInches = 9.9046697453840190752643582832258;
 
     private double maxdistanceError = 0.5;
     private double maxorientationError = 1;
@@ -94,6 +94,39 @@ public class Chassis {
     }
     public double getFrontEncoderPos(){
         return frontEncoder.getCurrentPosition();
+    }
+
+    public void goToXDistance(double x, double power){
+        currentPosition.setXPosition(0);
+        startingLEpos = leftEncoder.getCurrentPosition();
+        startingREpos = rightEncoder.getCurrentPosition();
+
+        double currentX  = currentPosition.getXPosition();
+        double distance = currentX - x;
+        int sign = (int)(x/Math.abs(x));
+        while(Math.abs(distance) > maxdistanceError){
+            currentX  = currentPosition.getXPosition();
+            distance = currentX - x;
+
+            double encoderAverage = (((leftEncoder.getCurrentPosition() - startingLEpos)
+                    + (rightEncoder.getCurrentPosition() - startingREpos))/2);
+            currentPosition.setXPosition(encoderAverage / ticksPerInches);
+
+            if(Math.abs(distance) > maxdistanceError + 10){
+                forward(power * sign);
+            }else{
+                forward(0.2 * sign);
+            }
+
+            if(Math.abs(currentX) > 500){
+                break;
+            }
+
+            telemetry.addData("x", currentPosition.getXPosition());
+            telemetry.addData("distance", distance);
+            telemetry.update();
+        }
+        stopChassis();
     }
 
     public void goToPosition (double targetXPosition, double targetYPosition, double robotPower){
@@ -182,9 +215,9 @@ public class Chassis {
                 orientationSign = (int) degreesToTheta / Math.abs((int) degreesToTheta);
             }
 
-            if(Math.abs(degreesToTheta) > maxorientationError + 15){
+            if(Math.abs(degreesToTheta) > maxorientationError + 100){
                 move(0,0,power * orientationSign);
-            }else if((Math.abs(degreesToTheta) <= maxorientationError + 15) && (Math.abs(degreesToTheta) > maxorientationError)){
+            }else if((Math.abs(degreesToTheta) <= maxorientationError + 100) && (Math.abs(degreesToTheta) > maxorientationError)){
                 move(0,0,0.2 * orientationSign);
             }else{
                 move(0,0,0);
